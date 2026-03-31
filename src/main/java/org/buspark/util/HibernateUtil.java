@@ -3,6 +3,7 @@ package org.buspark.util;
 import org.buspark.model.Bus;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.cfg.Environment;
 import java.util.Properties;
 
 public class HibernateUtil {
@@ -12,22 +13,26 @@ public class HibernateUtil {
         if (sessionFactory == null) {
             try {
                 Configuration configuration = new Configuration();
-
                 Properties settings = new Properties();
-                settings.put("hibernate.connection.driver_class", "org.postgresql.Driver");
-                settings.put("hibernate.connection.url", "jdbc:postgresql://localhost:5432/cursWork");
-                settings.put("hibernate.connection.username", "postgres");
-                settings.put("hibernate.connection.password", "твій_пароль");
-                settings.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-                settings.put("hibernate.show_sql", "true");
-                settings.put("hibernate.hbm2ddl.auto", "update");
+
+                settings.put(Environment.DRIVER, "org.postgresql.Driver");
+
+                settings.put(Environment.URL, System.getenv("DB_URL"));
+                settings.put(Environment.USER, System.getenv("DB_USER"));
+                settings.put(Environment.PASS, System.getenv("DB_PASS"));
+
+                settings.put(Environment.DIALECT, "org.hibernate.dialect.PostgreSQLDialect");
+                settings.put(Environment.SHOW_SQL, "true");
+                settings.put(Environment.HBM2DDL_AUTO, "update");
 
                 configuration.setProperties(settings);
                 configuration.addAnnotatedClass(Bus.class);
 
                 sessionFactory = configuration.buildSessionFactory();
             } catch (Exception e) {
+                System.err.println("CRITICAL ERROR: Hibernate initialization failed!");
                 e.printStackTrace();
+                throw new RuntimeException("Failed to create session factory");
             }
         }
         return sessionFactory;
