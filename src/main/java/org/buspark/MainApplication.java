@@ -33,7 +33,7 @@ public class MainApplication {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
-                        .allowedOrigins("https://bus-depot-ijr5o7a04-iarynovskyis-projects.vercel.app")
+                        .allowedOriginPatterns("https://*.vercel.app", "http://localhost:5173")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
